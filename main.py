@@ -1,6 +1,8 @@
 import PySimpleGUI as sg
 from malrep import *
 
+version = 1.0
+
 
 current_xlsx_file = MALEX_BASENAME
 
@@ -22,7 +24,7 @@ layout = [  [sg.Push(), sg.Text('דיווח תקלות', font=FONT_HEADER), sg.P
             [sg.Push(), sg.Output(size=(CONSOLE_WIDTH,5), key='-OUTPUT-', font=FONT_LOG)],
             ]
 
-window = sg.Window('דיווח תקלות', layout, element_justification='r')
+window = sg.Window(f'malRep version {version}', layout, element_justification='r')
 
 while True:  # Event Loop
     event, values = window.read()
@@ -41,7 +43,7 @@ while True:  # Event Loop
             window['-SYSTEM-'].update(values=systems_list)
             window['-SUBSYSTEM-'].update(values=subsystems_list)
             window['-STATUS-'].update(values=malfunctions_status_list)
-
+            window['-OUTPUT-'].update('')
             props_list = get_prop_list_by_subsystem(props_structs_list, values['-SUBSYSTEM-'])
             window['-PROP-'].update(values=props_list)
             print(f"קובץ אקסל נטען {current_xlsx_file}")
@@ -57,6 +59,10 @@ while True:  # Event Loop
         description = values['-DESCRIPTION-']
         operator = values['-OPERATOR-']
         notes = values['-NOTES-']
+        for param in [date, time, system, subsystem, operator, prop]:
+            if param in [None, '']:
+                print(f"נא למלא את כל השדות")
+                break
         mal_num = add_malfunction_to_excel(current_xlsx_file,
         [
             date,

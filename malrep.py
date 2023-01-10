@@ -5,7 +5,7 @@ from global_defs import *
 
 def add_malfunction_to_excel(input_file, new_entry):
     if not os.path.isfile(input_file):
-        print(f"הקובץ לא נמצא {input_file}")
+        print(f"הקובץ לא נמצא-{input_file}")
         return ERR_ROW_NOT_APPENDED
 
     wb = openpyxl.load_workbook(filename=input_file)
@@ -54,7 +54,7 @@ def validate_entry(list, entry):
 
 def get_all_systems_lists(input_file):
     if not os.path.isfile(input_file):
-        print(f"הקובץ לא נמצא {input_file}")
+        print(f"הקובץ לא נמצא-{input_file}")
         return [''],[''],[''],['']
 
     systems_list = []
@@ -77,7 +77,7 @@ def get_all_systems_lists(input_file):
 
 def load_malfunctions_excel(input_file):
     if not os.path.isfile(input_file):
-        print(f"הקובץ לא נמצא {input_file}")
+        print(f"הקובץ לא נמצא-{input_file}")
         return [Prop(   name='',
                         system= '',
                         subsystem= '',
