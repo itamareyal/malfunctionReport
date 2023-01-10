@@ -1,8 +1,13 @@
 import pandas as pd
 import openpyxl
+import os
 from global_defs import *
 
 def add_malfunction_to_excel(input_file, new_entry):
+    if not os.path.isfile(input_file):
+        print(f"הקובץ לא נמצא {input_file}")
+        return ERR_ROW_NOT_APPENDED
+
     wb = openpyxl.load_workbook(filename=input_file)
     ws = wb[MALEX_MALFUNCTIONS_SHEET]
     row = ws.max_row + 1
@@ -11,10 +16,21 @@ def add_malfunction_to_excel(input_file, new_entry):
         ws.cell(row=row, column=col, value=entry)
 
     wb.save(input_file)
+    print(f"תקלה נרשמה {row}")
     return row
+
+def verify_input_file(input_file):
+    if not os.path.exists(input_file):
+        print(f"File does not exist {input_file}")
+        return False
+    elif not input_file.split('.')[-1] == 'xlsx':
+        print(f"File format isn't xlsx")
+        return False
+    return True
 
 
 def get_prop_list_by_subsystem(props_list, subsystem):
+
     if not subsystem:
         return_list = [prop.name for prop in props_list]
         return_list.append(ELSE)
@@ -37,6 +53,10 @@ def validate_entry(list, entry):
     return list
 
 def get_all_systems_lists(input_file):
+    if not os.path.isfile(input_file):
+        print(f"הקובץ לא נמצא {input_file}")
+        return [''],[''],[''],['']
+
     systems_list = []
     subsystems_list = []
     malfunctions_list = []
@@ -56,6 +76,13 @@ def get_all_systems_lists(input_file):
 
 
 def load_malfunctions_excel(input_file):
+    if not os.path.isfile(input_file):
+        print(f"הקובץ לא נמצא {input_file}")
+        return [Prop(   name='',
+                        system= '',
+                        subsystem= '',
+                        description= '')]
+
     props_list = []
     props_sheet = pd.read_excel(open(input_file, 'rb'), sheet_name=MALEX_PROPS_SHEET, keep_default_na=False)
     for index, row in props_sheet.iterrows():
